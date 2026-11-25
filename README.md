@@ -1,4 +1,4 @@
-# I2C by meptNN (v0.9.0 - donanim testi surerken)
+# I2C by meptNN (v1.0.1)
 
 Arduino platformu için sıfırdan geliştirilmiş, donanımsal I2C pinlerine (`A4`/`A5` vb.) bağımlı kalmadan **herhangi iki dijital pin** üzerinden haberleşme sağlayan yazılımsal (*bit-banging*) I2C kütüphanesidir.
 
@@ -29,7 +29,7 @@ Kütüphane, Arduino'nun standart `Wire` kütüphanesinden bağımsız olarak I2
 Open-drain mimarisi gereği **SDA** ve **SCL** hatları ile **VCC (5V veya 3.3V)** arasına harici **4.7kΩ pull-up** dirençleri bağlanmalıdır.
 
 ## Kurulum
-1. Bu depoyu sağ üstteki **Code > Download ZIP** butonundan (sürüm yayınlandığında **Releases** bölümünden de) indirin.
+1. Bu depoyu sağ üstteki **Code > Download ZIP** butonundan (veya **Releases** bölümünden son sürümü seçerek) indirin.
 2. Arduino IDE'yi açın.
 3. **Taslak (Sketch) > Library Ekle (Include Library) > .ZIP Kitaplığı Ekle...** menüsünden indirdiğiniz `.zip` dosyasını seçin.
 
@@ -111,7 +111,7 @@ void loop() {}
 * Yalnızca **7-bit adres** kullanılır; R/W biti kütüphane tarafından eklenir (`0x08`–`0x77`).
 * Hız yaklaşık **60 kHz** civarıdır (yarım periyot ≈ 8 µs), standart 100 kHz'in altındadır.
 * Zaman aşımı (`Timeout`) olursa hat takılı kalmış olabilir; cihazı resetlemek gerekebilir.
-* Gerçek donanım testi sürüyor (Wokwi + mantık analizörü ile DS1307 doğrulandı); bu yüzden sürüm `0.9.0`.
+* Gerçek donanım testi sürüyor (Wokwi + mantık analizörü ile DS1307 doğrulandı); bu yüzden bazı özellikler henüz gerçek donanımda doğrulanmadı.
 * Register düzeyi optimizasyon ve donanım TWI desteği sonraki sürümlerde planlanıyor.
 
 ## Lisans
