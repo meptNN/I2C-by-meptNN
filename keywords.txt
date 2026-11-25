@@ -1,0 +1,32 @@
+#######################################
+# Siniflar ve Tipler (KEYWORD1)
+#######################################
+BenimI2C	KEYWORD1
+I2C_TR	KEYWORD1
+Error	KEYWORD1
+Hata	KEYWORD1
+
+#######################################
+# Fonksiyonlar (KEYWORD2)
+#######################################
+begin	KEYWORD2
+readReg	KEYWORD2
+writeReg	KEYWORD2
+scan	KEYWORD2
+aciklama	KEYWORD2
+baslat	KEYWORD2
+oku	KEYWORD2
+yaz	KEYWORD2
+tara	KEYWORD2
+
+#######################################
+# Sabitler (LITERAL1)
+#######################################
+Ok	LITERAL1
+AddressNack	LITERAL1
+DataNack	LITERAL1
+Timeout	LITERAL1
+Tamam	LITERAL1
+AdresYok	LITERAL1
+VeriReddi	LITERAL1
+ZamanAsimi	LITERAL1
