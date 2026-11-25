@@ -8,7 +8,7 @@
 
 #include <i2c_meptnn.h>
 
-BenimI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
+MeptnnI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
 
 const uint8_t CIHAZ_ADRESI = 0x68;
 const uint8_t GUC_REG      = 0x6B;
@@ -33,7 +33,7 @@ void setup() {
     Serial.println(okunan, HEX);
   } else {
     Serial.print(F("Islem basarisiz: "));
-    Serial.println(BenimI2C::aciklama(sonuc));
+    Serial.println(MeptnnI2C::aciklama(sonuc));
   }
 }
 

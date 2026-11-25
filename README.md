@@ -1,4 +1,4 @@
-# I2C by meptNN (v1.0.0)
+# I2C by meptNN (v0.9.0 - donanim testi surerken)
 
 Arduino platformu için sıfırdan geliştirilmiş, donanımsal I2C pinlerine (`A4`/`A5` vb.) bağımlı kalmadan **herhangi iki dijital pin** üzerinden haberleşme sağlayan yazılımsal (*bit-banging*) I2C kütüphanesidir.
 
@@ -17,7 +17,7 @@ Kütüphane, Arduino'nun standart `Wire` kütüphanesinden bağımsız olarak I2
    * Yavaş çalışan slave cihazların `SCL` hattını `LOW` seviyesinde tutarak master'ı bekletmesi (*clock stretching*) desteklenir.
    * Hattın kopuk olması veya pull-up direnci bulunmaması durumunda sonsuz döngüye girmeyi önlemek için `micros()` tabanlı **1000 µs zaman aşımı (`Error::Timeout`)** koruması bulunur.
 3. **Repeated Start (`Sr`) Desteği:**
-   * Register okuma işlemlerinde araya `STOP` koşulu sokmadan doğrudan `Repeated Start` sinyali üretilir; böylece çoklu master veya durum korumalı sensörlerde register işaretçisi sıfırlanmadan güvenli okuma yapılır.
+   * Register okuma işlemlerinde araya `STOP` koşulu sokmadan doğrudan `Repeated Start` sinyali üretilir; böylece cihazın register işaretçisi korunur ve okuma tek bir kesintisiz işlemde tamamlanır.
 4. **Düşük RAM Tüketimi (`F()` Makrosu):**
    * Tüm Türkçe hata açıklamaları SRAM yerine doğrudan Flash bellekte (`__FlashStringHelper`) saklanır; Arduino UNO gibi 2 KB RAM'e sahip mikrodenetleyicilerde bellek daralmasına yol açmaz.
 5. **Polimorfik Çıktı (`Print &p`):**
@@ -29,7 +29,7 @@ Kütüphane, Arduino'nun standart `Wire` kütüphanesinden bağımsız olarak I2
 Open-drain mimarisi gereği **SDA** ve **SCL** hatları ile **VCC (5V veya 3.3V)** arasına harici **4.7kΩ pull-up** dirençleri bağlanmalıdır.
 
 ## Kurulum
-1. Bu depoyu sağ üstteki **Code > Download ZIP** butonundan (veya **Releases** bölümünden `v1.0.0` sürümünü seçerek) indirin.
+1. Bu depoyu sağ üstteki **Code > Download ZIP** butonundan (sürüm yayınlandığında **Releases** bölümünden de) indirin.
 2. Arduino IDE'yi açın.
 3. **Taslak (Sketch) > Library Ekle (Include Library) > .ZIP Kitaplığı Ekle...** menüsünden indirdiğiniz `.zip` dosyasını seçin.
 
@@ -43,7 +43,7 @@ Hata kontrolü zorunlu değildir; normal akışta fonksiyonlar doğrudan çağr�
 ```cpp
 #include <i2c_meptnn.h>
 
-BenimI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
+MeptnnI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
 
 void setup() {
   Serial.begin(9600);
@@ -94,7 +94,7 @@ void loop() {}
 
 | Standart API (`i2c_meptnn.h`) | Türkçe API (`i2c_meptnn_tr.h`) | Görevi |
 | :--- | :--- | :--- |
-| `BenimI2C i2c(sda, scl)` | `I2C_TR i2c(sda, scl)` | Belirtilen pinlerle I2C nesnesi oluşturur. |
+| `MeptnnI2C i2c(sda, scl)` | `I2C_TR i2c(sda, scl)` | Belirtilen pinlerle I2C nesnesi oluşturur. |
 | `i2c.begin()` | `i2c.baslat()` | Hatları hazırlar ve SCL hattını test eder. |
 | `i2c.readReg(adr, reg, &val)` | `i2c.oku(adr, reg, &val)` | Register'dan 1 bayt okur. |
 | `i2c.writeReg(adr, reg, val)` | `i2c.yaz(adr, reg, val)` | Register'a 1 bayt yazar. |
@@ -105,6 +105,14 @@ void loop() {}
 | `Error::AddressNack` | `AdresYok` | Cihaz bulunamadı veya adres yanlış. |
 | `Error::DataNack` | `VeriReddi` | Cihaz gönderilen veriyi kabul etmedi. |
 | `Error::Timeout` | `ZamanAsimi` | SCL hattı yükselmedi (pull-up kontrolü). |
+
+## Sınırlamalar
+* Yalnızca **master** modu desteklenir (slave ve multi-master yok).
+* Yalnızca **7-bit adres** kullanılır; R/W biti kütüphane tarafından eklenir (`0x08`–`0x77`).
+* Hız yaklaşık **60 kHz** civarıdır (yarım periyot ≈ 8 µs), standart 100 kHz'in altındadır.
+* Zaman aşımı (`Timeout`) olursa hat takılı kalmış olabilir; cihazı resetlemek gerekebilir.
+* Gerçek donanım testi sürüyor (Wokwi + mantık analizörü ile DS1307 doğrulandı); bu yüzden sürüm `0.9.0`.
+* Register düzeyi optimizasyon ve donanım TWI desteği sonraki sürümlerde planlanıyor.
 
 ## Lisans
 Bu proje MIT Lisansı ile lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakabilirsiniz.

@@ -11,10 +11,10 @@ constexpr Error AdresYok   = Error::AddressNack;
 constexpr Error VeriReddi  = Error::DataNack;
 constexpr Error ZamanAsimi = Error::Timeout;
 
-// Orijinal BenimI2C sinifini degistirmeden Turkce kisa API sunan sarmalayici
-class I2C_TR : public BenimI2C {
+// Orijinal MeptnnI2C sinifini degistirmeden Turkce kisa API sunan sarmalayici
+class I2C_TR : public MeptnnI2C {
 public:
-  I2C_TR(uint8_t sdaPin, uint8_t sclPin) : BenimI2C(sdaPin, sclPin) {}
+  I2C_TR(uint8_t sdaPin, uint8_t sclPin) : MeptnnI2C(sdaPin, sclPin) {}
 
   inline Hata baslat() {
     return begin();

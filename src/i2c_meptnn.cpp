@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------
 // Constructor, begin, aciklama
 // ---------------------------------------------------------------
-BenimI2C::BenimI2C(uint8_t sdaPin, uint8_t sclPin) {
+MeptnnI2C::MeptnnI2C(uint8_t sdaPin, uint8_t sclPin) {
   _sda = sdaPin;
   _scl = sclPin;
   _yarimPeriyot = 5;      // mikrosaniye (yaklasik 100 kHz hedefi)
@@ -12,7 +12,7 @@ BenimI2C::BenimI2C(uint8_t sdaPin, uint8_t sclPin) {
 
 // Hatlari hazirlar ve SCL'nin yukselebildigini dener.
 // SCL yukselmezse (pull-up yok, kablo kopuk, hat GND'ye kisa) Timeout doner.
-Error BenimI2C::begin() {
+Error MeptnnI2C::begin() {
   // Once PORT bitlerini LOW'a hazirla (pinler henuz INPUT iken),
   // sonra hatlari birak: boylece "cek" dedigimizde pin hemen LOW surer.
   digitalWrite(_sda, LOW);
@@ -23,7 +23,7 @@ Error BenimI2C::begin() {
 }
 
 // Metinler flash'ta tutulur (F makrosu), Uno'nun kisitli RAM'ini harcamaz.
-const __FlashStringHelper* BenimI2C::aciklama(Error e) {
+const __FlashStringHelper* MeptnnI2C::aciklama(Error e) {
   switch (e) {
     case Error::Ok:          return F("Tamam");
     case Error::AddressNack: return F("Adres NACK: cihaz yok ya da adres yanlis");
@@ -36,14 +36,14 @@ const __FlashStringHelper* BenimI2C::aciklama(Error e) {
 // ---------------------------------------------------------------
 // Hat kontrolu (open-drain)
 // ---------------------------------------------------------------
-void BenimI2C::sdaBirak() { pinMode(_sda, INPUT); }
-void BenimI2C::sdaCek()   { pinMode(_sda, OUTPUT); }
-void BenimI2C::sclBirak() { pinMode(_scl, INPUT); }
-void BenimI2C::sclCek()   { pinMode(_scl, OUTPUT); }
+void MeptnnI2C::sdaBirak() { pinMode(_sda, INPUT); }
+void MeptnnI2C::sdaCek()   { pinMode(_sda, OUTPUT); }
+void MeptnnI2C::sclBirak() { pinMode(_scl, INPUT); }
+void MeptnnI2C::sclCek()   { pinMode(_scl, OUTPUT); }
 
 // SCL'yi birakir ve gercekten yukselmesini bekler (clock stretching).
 // Sure dolarsa Timeout dondurur.
-Error BenimI2C::sclBirakBekle() {
+Error MeptnnI2C::sclBirakBekle() {
   sclBirak();
   uint32_t baslangic = micros();
   while (digitalRead(_scl) == LOW) {
@@ -57,14 +57,14 @@ Error BenimI2C::sclBirakBekle() {
 // ---------------------------------------------------------------
 // Protokol: start, repeated start, stop
 // ---------------------------------------------------------------
-Error BenimI2C::iletisimStart() {
+Error MeptnnI2C::iletisimStart() {
   sdaCek();
   delayMicroseconds(_yarimPeriyot);
   sclCek();
   return Error::Ok;
 }
 
-Error BenimI2C::iletisimTekrarStart() {
+Error MeptnnI2C::iletisimTekrarStart() {
   sdaBirak();
   delayMicroseconds(_yarimPeriyot);
   Error h = sclBirakBekle();
@@ -76,7 +76,7 @@ Error BenimI2C::iletisimTekrarStart() {
   return Error::Ok;
 }
 
-Error BenimI2C::iletisimStop() {
+Error MeptnnI2C::iletisimStop() {
   sdaCek();
   delayMicroseconds(_yarimPeriyot);
   Error h = sclBirakBekle();
@@ -90,7 +90,7 @@ Error BenimI2C::iletisimStop() {
 // ---------------------------------------------------------------
 // Bit / bayt
 // ---------------------------------------------------------------
-Error BenimI2C::bitGonder(uint8_t bit) {
+Error MeptnnI2C::bitGonder(uint8_t bit) {
   if (bit == 1) {
     sdaBirak();
   } else {
@@ -104,7 +104,7 @@ Error BenimI2C::bitGonder(uint8_t bit) {
   return Error::Ok;
 }
 
-Error BenimI2C::bitOku(uint8_t &bit) {
+Error MeptnnI2C::bitOku(uint8_t &bit) {
   Error h = sclBirakBekle();
   if (h != Error::Ok) return h;
   delayMicroseconds(_yarimPeriyot);
@@ -114,7 +114,7 @@ Error BenimI2C::bitOku(uint8_t &bit) {
   return Error::Ok;
 }
 
-Error BenimI2C::ackOku() {
+Error MeptnnI2C::ackOku() {
   sdaBirak();
   delayMicroseconds(_yarimPeriyot);
   Error h = sclBirakBekle();   // 9. clock
@@ -128,7 +128,7 @@ Error BenimI2C::ackOku() {
   return Error::DataNack;      // NACK
 }
 
-Error BenimI2C::baytGonder(uint8_t bayt) {
+Error MeptnnI2C::baytGonder(uint8_t bayt) {
   for (int8_t i = 7; i >= 0; i--) {
     uint8_t bit = (bayt >> i) & 1;
     Error h = bitGonder(bit);
@@ -137,7 +137,7 @@ Error BenimI2C::baytGonder(uint8_t bayt) {
   return ackOku();
 }
 
-Error BenimI2C::baytOku(uint8_t &bayt, bool ackVer) {
+Error MeptnnI2C::baytOku(uint8_t &bayt, bool ackVer) {
   uint8_t sonuc = 0;
   sdaBirak();
   for (int8_t i = 7; i >= 0; i--) {
@@ -169,7 +169,7 @@ Error BenimI2C::baytOku(uint8_t &bayt, bool ackVer) {
 // ---------------------------------------------------------------
 // Ic fonksiyonlar: isi yapar, hata olursa erken cikar
 // ---------------------------------------------------------------
-Error BenimI2C::yazIc(uint8_t adres, uint8_t reg, uint8_t deger) {
+Error MeptnnI2C::yazIc(uint8_t adres, uint8_t reg, uint8_t deger) {
   Error h = iletisimStart();
   if (h != Error::Ok) return h;
 
@@ -186,7 +186,7 @@ Error BenimI2C::yazIc(uint8_t adres, uint8_t reg, uint8_t deger) {
   return Error::Ok;
 }
 
-Error BenimI2C::okuIc(uint8_t adres, uint8_t reg, uint8_t &deger) {
+Error MeptnnI2C::okuIc(uint8_t adres, uint8_t reg, uint8_t &deger) {
   Error h = iletisimStart();
   if (h != Error::Ok) return h;
 
@@ -211,7 +211,7 @@ Error BenimI2C::okuIc(uint8_t adres, uint8_t reg, uint8_t &deger) {
 }
 
 // Cok baytli yazma: S, adres+W, reg, bayt0, bayt1, ... P
-Error BenimI2C::yazCokIc(uint8_t adres, uint8_t reg, const uint8_t *tampon, uint8_t uzunluk) {
+Error MeptnnI2C::yazCokIc(uint8_t adres, uint8_t reg, const uint8_t *tampon, uint8_t uzunluk) {
   Error h = iletisimStart();
   if (h != Error::Ok) return h;
 
@@ -231,7 +231,7 @@ Error BenimI2C::yazCokIc(uint8_t adres, uint8_t reg, const uint8_t *tampon, uint
 
 // Cok baytli okuma:
 // S, adres+W, reg, Sr, adres+R, bayt0(ACK), ..., sonBayt(NACK), P
-Error BenimI2C::okuCokIc(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uzunluk) {
+Error MeptnnI2C::okuCokIc(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uzunluk) {
   if (uzunluk == 0) return Error::Ok;   // okunacak bir sey yok
 
   Error h = iletisimStart();
@@ -262,25 +262,25 @@ Error BenimI2C::okuCokIc(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uz
 // ---------------------------------------------------------------
 // Kullanicinin gordugu fonksiyonlar: sonuc ne olursa olsun stop atar
 // ---------------------------------------------------------------
-Error BenimI2C::writeReg(uint8_t adres, uint8_t reg, uint8_t deger) {
+Error MeptnnI2C::writeReg(uint8_t adres, uint8_t reg, uint8_t deger) {
   Error h = yazIc(adres, reg, deger);
   iletisimStop();
   return h;
 }
 
-Error BenimI2C::readReg(uint8_t adres, uint8_t reg, uint8_t &deger) {
+Error MeptnnI2C::readReg(uint8_t adres, uint8_t reg, uint8_t &deger) {
   Error h = okuIc(adres, reg, deger);
   iletisimStop();
   return h;
 }
 
-Error BenimI2C::writeReg(uint8_t adres, uint8_t reg, const uint8_t *tampon, uint8_t uzunluk) {
+Error MeptnnI2C::writeReg(uint8_t adres, uint8_t reg, const uint8_t *tampon, uint8_t uzunluk) {
   Error h = yazCokIc(adres, reg, tampon, uzunluk);
   iletisimStop();
   return h;
 }
 
-Error BenimI2C::readReg(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uzunluk) {
+Error MeptnnI2C::readReg(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uzunluk) {
   Error h = okuCokIc(adres, reg, tampon, uzunluk);
   iletisimStop();
   return h;
@@ -292,7 +292,7 @@ Error BenimI2C::readReg(uint8_t adres, uint8_t reg, uint8_t *tampon, uint8_t uzu
 
 // Tek adrese seslenir. Ok ise cihaz ACK verdi (cihaz var).
 // Sonuc ne olursa olsun stop atilir, hat temiz kalir.
-Error BenimI2C::adresDene(uint8_t adres) {
+Error MeptnnI2C::adresDene(uint8_t adres) {
   Error h = iletisimStart();
   if (h == Error::Ok) {
     h = baytGonder((adres << 1) | 0);   // yazma adresi
@@ -304,7 +304,7 @@ Error BenimI2C::adresDene(uint8_t adres) {
 
 // Bulunan adresleri p'ye yazar (Serial ya da LCD olabilir).
 // Dondurdugu deger: bulunan cihaz sayisi.
-uint8_t BenimI2C::scan(Print &p) {
+uint8_t MeptnnI2C::scan(Print &p) {
   uint8_t bulunan = 0;
   for (uint8_t adres = 0x08; adres <= 0x77; adres++) {
     if (adresDene(adres) == Error::Ok) {

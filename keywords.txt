@@ -1,7 +1,7 @@
 #######################################
 # Siniflar ve Tipler (KEYWORD1)
 #######################################
-BenimI2C	KEYWORD1
+MeptnnI2C	KEYWORD1
 I2C_TR	KEYWORD1
 Error	KEYWORD1
 Hata	KEYWORD1

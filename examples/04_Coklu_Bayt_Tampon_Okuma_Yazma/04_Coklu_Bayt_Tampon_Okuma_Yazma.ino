@@ -8,7 +8,7 @@
 
 #include <i2c_meptnn.h>
 
-BenimI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
+MeptnnI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
 
 const uint8_t CIHAZ_ADRESI  = 0x68;
 const uint8_t BASLANGIC_REG = 0x3B; // Ornek: 6 baytlik ivme sensoru verisi

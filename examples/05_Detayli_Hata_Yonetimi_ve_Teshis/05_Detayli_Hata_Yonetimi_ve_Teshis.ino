@@ -9,12 +9,12 @@
 
 #include <i2c_meptnn.h>
 
-BenimI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
+MeptnnI2C i2c(2, 3); // SDA = Pin 2, SCL = Pin 3
 const uint8_t HEDEF_ADRES = 0x68;
 
 void hataRaporla(Error h) {
   Serial.print(F("[HATA] "));
-  Serial.println(BenimI2C::aciklama(h));
+  Serial.println(MeptnnI2C::aciklama(h));
 
   if (h == Error::Timeout) {
     Serial.println(F("-> Cozum: SDA/SCL hatlarina 4.7k ohm pull-up direnci baglayin."));

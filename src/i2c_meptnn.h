@@ -13,10 +13,10 @@ enum class Error : uint8_t {
   Timeout        // SCL hatti serbest kalmadi
 };
 
-class BenimI2C {
+class MeptnnI2C {
 public:
   // --- Kullanicinin gordugu yuzey (API) ---
-  BenimI2C(uint8_t sdaPin, uint8_t sclPin);
+  MeptnnI2C(uint8_t sdaPin, uint8_t sclPin);
   Error begin();
   Error readReg(uint8_t adres, uint8_t reg, uint8_t &deger);
   Error writeReg(uint8_t adres, uint8_t reg, uint8_t deger);
@@ -25,7 +25,7 @@ public:
   uint8_t scan(Print &p);   // bulunan adresleri p'ye yazar, bulunan sayiyi dondurur
 
   // Hatanin Turkce aciklamasini dondurur. Hicbir yere yazdirmaz:
-  // Serial.println(BenimI2C::aciklama(h));
+  // Serial.println(MeptnnI2C::aciklama(h));
   static const __FlashStringHelper* aciklama(Error e);
 
 private:
