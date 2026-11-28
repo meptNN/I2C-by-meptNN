@@ -1,9 +1,12 @@
 /*
-  OLED (SSD1306, adres 0x3C) test - I2C by meptNN
+  OLED (SH1106 / SSD1306 uyumlu, adres 0x3C) test - I2C by meptNN
+  Test edilen modul: SH1106 tabanli 128x64 OLED (SSD1306 komut dizisiyle calisti).
+  SH1106'da yatay adresleme yoktur ve sutunlar 2 piksel kayik olabilir;
+  ekranda kayma gorurseniz bolge() icindeki sutun degerlerine +2 ekleyin.
   Baglanti: OLED SDA -> D2, SCL -> D3, VCC -> 5V (ya da 3.3V), GND -> GND
   Not: Kutuphanenin v1.0.1 surumu (MeptnnI2C sinifi) kurulu olmali.
 
-  SSD1306 her I2C gonderiminde ilk bayt olarak "kontrol baytini" bekler:
+  SSD1306/SH1106 her I2C gonderiminde ilk bayt olarak "kontrol baytini" bekler:
     0x00 -> arkasindan gelenler KOMUT
     0x40 -> arkasindan gelenler EKRAN VERISI (piksel)
   Bu yuzden kutuphanenin writeReg(adres, reg, tampon, uzunluk) fonksiyonunda
