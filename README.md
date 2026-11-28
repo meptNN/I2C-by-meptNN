@@ -111,7 +111,7 @@ void loop() {}
 * Yalnızca **7-bit adres** kullanılır; R/W biti kütüphane tarafından eklenir (`0x08`–`0x77`).
 * Hız yaklaşık **60 kHz** civarıdır (yarım periyot ≈ 8 µs), standart 100 kHz'in altındadır.
 * Zaman aşımı (`Timeout`) olursa hat takılı kalmış olabilir; cihazı resetlemek gerekebilir.
-* Gerçek donanım testi sürüyor (Wokwi + mantık analizörü ile DS1307 doğrulandı); bu yüzden bazı özellikler henüz gerçek donanımda doğrulanmadı.
+* **Test durumu:** Wokwi simülasyonunda DS1307 ile (mantık analizörüyle) ve gerçek donanımda **Arduino Uno + SSD1306 OLED (0x3C)** ile doğrulandı (`examples/08_OLED_SSD1306_Test`). Diğer cihazlar henüz denenmedi.
 * Register düzeyi optimizasyon ve donanım TWI desteği sonraki sürümlerde planlanıyor.
 
 ## Lisans
